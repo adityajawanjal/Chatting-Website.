@@ -7,8 +7,17 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import React from "react";
+import { startConversation } from "../api/api";
+import { useAccountState } from "../context/AccountProvider";
 
-const SingleChat = () => {
+const SingleChat = ({name , picture , user}) => {
+const {setPerson , account  } = useAccountState();
+
+const startChat =async () =>{
+  setPerson(user);
+  await startConversation({senderId:account.sub , receiverId:user.sub});
+}
+
   return (
     <>
       <HStack
@@ -19,10 +28,11 @@ const SingleChat = () => {
         ml={"2"}
         mr={"2"}
         pr={"3"}
-        bgColor={"honeydew"}
+        bgColor={"honeydew"}  
+        onClick={()=>startChat()}
       >
         <Image
-          src="https://play-lh.googleusercontent.com/ZyWNGIfzUyoajtFcD7NhMksHEZh37f-MkHVGr5Yfefa-IX7yj9SMfI82Z7a2wpdKCA=w240-h480-rw"
+          src={picture}
           alt="dp2"
           w={"16"}
           h={"12"}
@@ -30,9 +40,9 @@ const SingleChat = () => {
           borderRadius={"full"}
         />
         <VStack justifyContent={"flex-start"} h={"16"}>
-          <Text fontWeight={"bold"}>Aditya</Text>
+          <Text fontWeight={"bold"}>{name}</Text>
           <Text noOfLines={1} pos={"relative"} top={"-2"}>
-            Aditya is a good boy
+            {"subject is a good."}
           </Text>
         </VStack>
         <Spacer />

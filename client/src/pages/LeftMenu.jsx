@@ -24,17 +24,18 @@ import { useAccountState } from "../context/AccountProvider";
 import SingleChat from "./SingleChat";
 
 const LeftMenu = () => {
-  const { account } = useAccountState();
+  const { account, text, setText } = useAccountState();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [users , setUsers] = useState([]);
+  const [users, setUsers] = useState([]);
 
- useEffect(()=>{
-  const fetchUsers = async() =>{
-    const data = await getAllUsers();
-    setUsers(data);
-  }
-  fetchUsers();
- },[])
+  useEffect(() => {
+    const fetchUsers = async () => {
+      let data = await getAllUsers();
+      const filterData = data.filter(e=>e.name.toLowerCase().includes(text.toLowerCase()));
+      setUsers(filterData);
+    };
+    fetchUsers();
+  }, [text]);
 
   return (
     <>
@@ -80,7 +81,9 @@ const LeftMenu = () => {
         <HStack gap={2}>
           <Text>Chat</Text>
           <Menu placement={"bottom-end"}>
-            <MenuButton as={"text"} style={{cursor:"pointer"}}>More</MenuButton>
+            <MenuButton as={"text"} style={{ cursor: "pointer" }}>
+              More
+            </MenuButton>
             <MenuList>
               <MenuItem onClick={onOpen}>profile</MenuItem>
               <MenuItem>status</MenuItem>
@@ -90,18 +93,25 @@ const LeftMenu = () => {
         </HStack>
       </HStack>
       <Input
+        // "Search or start a new Chat ..."
         type={"text"}
-        placeholder={"Search or start a new Chat ..."}
+        placeholder={account.sub}
         w={"99%"}
         mb={"5"}
+        onChange={(e) => {
+          setText(e.target.value);
+        }}
       />
-      {
-        users.map((e)=>{
-          return(
-            <SingleChat key={e.id} />
-          )
-        })
-      }
+      {users.map((e) => {
+        return (
+          <SingleChat
+            key={e.id}
+            name={e.given_name}
+            picture={e.picture}
+            user={e}
+          />
+        );
+      })}
     </>
   );
 };

@@ -11,8 +11,14 @@ export const adduser = async(data) =>{
 export const getAllUsers = async(data) =>{
     try {
       const allUsers = await axios.get(`${url}/users`);
-      console.log(allUsers);
       return allUsers.data;
+    } catch (err) {
+        console.log(err);
+    }
+}
+export const startConversation = async(data) =>{
+    try {
+      await axios.post(`${url}/conversation/add`,data);
     } catch (err) {
         console.log(err);
     }
